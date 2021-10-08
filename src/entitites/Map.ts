@@ -1,9 +1,20 @@
 import User from "./User";
 import Company from "./Company";
 
+//Instructions to other classes how to be argument for 'addMarker'
+export interface IMap {
+    _location: {
+        lat: number;
+        lng: number;
+    }
+    markerContent(): string;
+    getLocationLatParam(): number;
+    getLocationLngParam(): number;
+}
+
 export default class Map {
-    private selector: string;
-    private googleMap: google.maps.Map;
+    private readonly selector: string;
+    private readonly googleMap: google.maps.Map;
 
     constructor(newSelector: string) {
         this.selector = newSelector;
@@ -16,17 +27,21 @@ export default class Map {
         });
     }
 
-    addUserMarker(user: User): void {
-        new google.maps.Marker({
-            map : this.googleMap,
+    addMarker(mapper: IMap): void {
+        const marker = new google.maps.Marker({
+            map: this.googleMap,
             position: {
-                lat: user.getLocationLatParam(),
-                lng : user.getLocationLngParam()
+                lat: mapper.getLocationLatParam(),
+                lng: mapper.getLocationLngParam()
             }
         })
-    }
 
-    addCompanyMarker(company: Company): void {
+        marker.addListener('click', () => {
+            const infoWindow = new google.maps.InfoWindow({
+                content: mapper.markerContent()
+            })
 
+            infoWindow.open(this.googleMap, marker);
+        })
     }
 }

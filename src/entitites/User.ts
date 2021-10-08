@@ -1,10 +1,10 @@
 // @ts-ignore
 import faker from 'faker';
-import IUser from "../interfaces/IUser";
+import {IMap} from "./Map";
 
-export default class User {
+export default class User implements IMap{
     private readonly name: string;
-    private _location: {
+    _location: {
         lat: number;
         lng: number;
     }
@@ -17,8 +17,8 @@ export default class User {
         }
     }
 
-    getUserName(): string {
-        return this.name;
+    markerContent(): string {
+        return `<h1>User with name - ${this.name}</h1>`;
     }
 
     getLocationLatParam(): number {
@@ -28,14 +28,4 @@ export default class User {
     getLocationLngParam(): number {
         return this._location.lng;
     }
-
-    get location(){
-        return this._location;
-    }
-
-    set location(value: { lat: number; lng: number }) {
-        this._location = value;
-    }
-
-
 }
